@@ -36,4 +36,30 @@ const insertDataClient = async (req: Request, res: Response) => {
   }
 };
 
-export { insertDataClient };
+const getDataClient = async (req: Request, res: Response) => {
+  try {
+    const query = `SELECT * FROM cliente`;
+    const result = await connection
+      .query(query)
+      .catch((err) => console.error("Error en query:", err));
+
+    if (!Array.isArray(result)) {
+      throw new Error("Formato incorrecto o datos no encontrados");
+    }
+
+    const [data] = result;
+
+    return res.status(200).json({
+      ok: true,
+      data,
+    });
+  } catch (err) {
+    console.error("Error al obtener datos del cliente:", err);
+    return res.status(500).json({
+      ok: false,
+      message: "Error interno del servidor",
+    });
+  }
+};
+
+export { insertDataClient, getDataClient };
